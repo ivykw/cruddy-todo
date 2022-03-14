@@ -24,7 +24,7 @@ exports.create = (text, callback) => {
 exports.readAll = (callback) => {
   fs.readdir(exports.dataDir, (err, items) =>{
     if (err) {
-      throw ('erro reading all file');
+      throw ('error reading all file');
     } else {
       var data = _.map(items, (filename) => {
         var id = filename.slice(0, 5);
@@ -34,24 +34,22 @@ exports.readAll = (callback) => {
     }
   });
 };
-// const readCounter = (callback) => {
-//   fs.readFile(exports.counterFile, (err, fileData) => {
-//     if (err) {
-//       callback(null, 0);
-//     } else {
-//       callback(null, Number(fileData));
-//     }
-//   });
-// };
+
 
 exports.readOne = (id, callback) => {
-  var text = items[id];
-  if (!text) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback(null, { id, text });
-  }
+  // var text = items[id];
+  var path = `${exports.dataDir}/${id}.txt`;
+  fs.readFile(path, 'utf8', (err, fileData) => {
+    if (err) {
+      callback(new Error(`No item with id: ${id}`));
+    } else {
+      var message = { id, text: fileData };
+      // console.log(message);
+      callback(null, message);
+    }
+  });
 };
+
 
 exports.update = (id, text, callback) => {
   var item = items[id];
