@@ -3,7 +3,7 @@ const path = require('path');
 const _ = require('underscore');
 const counter = require('./counter');
 
-var items = {};
+// var items = {};
 
 // Public API - Fix these CRUD functions ///////////////////////////////////////
 
@@ -12,7 +12,7 @@ exports.create = (text, callback) => {
     var path = `${exports.dataDir}/${id}.txt`;
     fs.writeFile(path, text, (err) => {
       if (err) {
-        throw ('error writing counter');
+        throw ('error creating file');
       } else {
         callback(null, { id, text });
       }
@@ -22,11 +22,27 @@ exports.create = (text, callback) => {
 
 
 exports.readAll = (callback) => {
-  var data = _.map(items, (text, id) => {
-    return { id, text };
+  fs.readdir(exports.dataDir, (err, items) =>{
+    if (err) {
+      throw ('erro reading all file');
+    } else {
+      var data = _.map(items, (filename) => {
+        var id = filename.slice(0, 5);
+        return filename = {id: id, text: id};
+      });
+      callback(null, data);
+    }
   });
-  callback(null, data);
 };
+// const readCounter = (callback) => {
+//   fs.readFile(exports.counterFile, (err, fileData) => {
+//     if (err) {
+//       callback(null, 0);
+//     } else {
+//       callback(null, Number(fileData));
+//     }
+//   });
+// };
 
 exports.readOne = (id, callback) => {
   var text = items[id];
