@@ -52,13 +52,27 @@ exports.readOne = (id, callback) => {
 
 
 exports.update = (id, text, callback) => {
-  var item = items[id];
-  if (!item) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    items[id] = text;
-    callback(null, { id, text });
-  }
+  var path = `${exports.dataDir}/${id}.txt`;
+  // if id is biiger than current counter, then do nothing, else do write File
+  fs.readdir(exports.dataDir, (err, items) =>{
+    if (err) {
+      throw ('error reading all file');
+    } else {
+      var lastCount = Number(items[items.length - 1].slice(0, 5));
+      if (Number(id) > lastCount) {
+        callback(new Error(`No item with id: ${id}`));
+      } else {
+        fs.writeFile(path, text, (err) => {
+          if (err) {
+            callback(new Error(`No item with id: ${id}`));
+          } else {
+            callback(null, { id, text });
+          }
+        });
+      }
+    }
+  });
+
 };
 
 exports.delete = (id, callback) => {
