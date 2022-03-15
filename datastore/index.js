@@ -53,37 +53,31 @@ exports.readOne = (id, callback) => {
 
 exports.update = (id, text, callback) => {
   var path = `${exports.dataDir}/${id}.txt`;
-  // if id is biiger than current counter, then do nothing, else do write File
-  fs.readdir(exports.dataDir, (err, items) =>{
-    if (err) {
-      throw ('error reading all file');
+  exports.readOne(id, (error, message) => {
+    if (error) {
+      callback(new Error(`No item with id: ${id}`));
     } else {
-      var lastCount = Number(items[items.length - 1].slice(0, 5));
-      if (Number(id) > lastCount) {
-        callback(new Error(`No item with id: ${id}`));
-      } else {
-        fs.writeFile(path, text, (err) => {
-          if (err) {
-            callback(new Error(`No item with id: ${id}`));
-          } else {
-            callback(null, { id, text });
-          }
-        });
-      }
+      fs.writeFile(path, text, (err) => {
+        if (err) {
+          callback(new Error(`No item with id: ${id}`));
+        } else {
+          callback(null, { id, text });
+        }
+      });
     }
   });
-
 };
 
 exports.delete = (id, callback) => {
-  var item = items[id];
-  delete items[id];
-  if (!item) {
-    // report an error if item not found
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback();
-  }
+  var path = `${exports.dataDir}/${id}.txt`;
+  // var item = items[id];
+  // delete items[id];
+  // if (!item) {
+  //   // report an error if item not found
+  //   callback(new Error(`No item with id: ${id}`));
+  // } else {
+  //   callback();
+  // }
 };
 
 // Config+Initialization code -- DO NOT MODIFY /////////////////////////////////
