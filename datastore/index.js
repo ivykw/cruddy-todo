@@ -37,14 +37,12 @@ exports.readAll = (callback) => {
 
 
 exports.readOne = (id, callback) => {
-  // var text = items[id];
   var path = `${exports.dataDir}/${id}.txt`;
   fs.readFile(path, 'utf8', (err, fileData) => {
     if (err) {
       callback(new Error(`No item with id: ${id}`));
     } else {
       var message = { id, text: fileData };
-      // console.log(message);
       callback(null, message);
     }
   });
